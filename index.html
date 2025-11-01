@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LIA 2.0 - Intelligent AI Assistant with Multi-API support, offline mode, and adaptive learning">
+    <meta name="author" content="Dewan Mahrazul Islam Chowdhury">
+    <meta name="theme-color" content="#1976d2">
+    
+    <title>LIA 2.0 - Your AI Companion</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="lia-logo.jpg">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+    
+    <!-- ============================================ -->
+    <!-- HEADER -->
+    <!-- ============================================ -->
+    <header id="main-header">
+        <div class="header-left">
+            <!-- Logo -->
+            <div class="logo-container">
+                <img src="lia-logo.jpg" 
+                     alt="LIA Logo" 
+                     class="logo"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>💙</text></svg>'">
+            </div>
+            
+            <!-- Title -->
+            <div class="header-title">
+                <h1>LIA</h1>
+                <span class="creator-badge">by Dewan Mahrazul Islam Chowdhury</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <!-- API Status Monitor -->
+            <div id="api-monitor" class="api-monitor">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <span id="api-status-text">Initializing...</span>
+            </div>
+            
+            <!-- Settings Button -->
+            <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Open settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================ -->
+    <main id="main-content">
+        
+        <!-- ============================================ -->
+        <!-- CHAT CONTAINER -->
+        <!-- ============================================ -->
+        <div id="chat-container">
+            
+            <!-- Personality Mode Selector -->
+            <div id="personality-bar" class="personality-bar">
+                <button class="personality-btn active" data-mode="PROFESSIONAL" title="Professional Mode">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Professional</span>
+                </button>
+                <button class="personality-btn" data-mode="CLASSY" title="Classy Mode">
+                    <i class="fas fa-glass-cheers"></i>
+                    <span>Classy</span>
+                </button>
+                <button class="personality-btn" data-mode="SASSY" title="Sassy Mode">
+                    <i class="fas fa-face-grin-tongue-wink"></i>
+                    <span>Sassy</span>
+                </button>
+                <button class="personality-btn" data-mode="INNOVATOR" title="Innovator Mode">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Innovator</span>
+                </button>
+            </div>
+            
+            <!-- Chat Messages Area -->
+            <div id="chat-messages" class="chat-messages">
+                <!-- Welcome Message -->
+                <div class="message assistant welcome-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            <p>Hey there! 💙 I'm <strong>LIA</strong>, your intelligent AI companion.</p>
+                            <p>I can help you with information, creative tasks, analysis, and much more!</p>
+                            <p><em>Tip: Try different personality modes above to change how I respond!</em></p>
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="typing-indicator" style="display: none;">
+                <div class="message assistant">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Replies -->
+            <div id="quick-replies" class="quick-replies">
+                <button class="quick-reply-btn" data-text="Tell me about yourself">
+                    <i class="fas fa-info-circle"></i> About LIA
+                </button>
+                <button class="quick-reply-btn" data-text="What can you do?">
+                    <i class="fas fa-question-circle"></i> Features
+                </button>
+                <button class="quick-reply-btn" data-text="Tell me a joke">
+                    <i class="fas fa-laugh"></i> Joke
+                </button>
+                <button class="quick-reply-btn" data-text="What's the weather?">
+                    <i class="fas fa-cloud-sun"></i> Weather
+                </button>
+                <button class="quick-reply-btn" data-text="Latest news">
+                    <i class="fas fa-newspaper"></i> News
+                </button>
+                <button class="quick-reply-btn" data-text="Crypto prices">
+                    <i class="fab fa-bitcoin"></i> Crypto
+                </button>
+            </div>
+            
+            <!-- Input Area -->
+            <div id="input-area" class="input-area">
+                <!-- Voice Input Button -->
+                <button id="voice-input-btn" class="icon-btn" title="Voice Input" aria-label="Start voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <!-- Text Input -->
+                <textarea 
+                    id="user-input" 
+                    class="user-input" 
+                    placeholder="Type your message here... (Ctrl+Enter to send)"
+                    rows="1"
+                    maxlength="5000"
+                ></textarea>
+                
+                <!-- Character Count -->
+                <span id="char-count" class="char-count">0/5000</span>
+                
+                <!-- Send Button -->
+                <button id="send-btn" class="send-btn" title="Send Message" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div id="action-bar" class="action-bar">
+                <button id="new-chat-btn" class="action-btn" title="New Conversation">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+                
+                <button id="clear-chat-btn" class="action-btn" title="Clear Current Chat">
+                    <i class="fas fa-eraser"></i>
+                    <span>Clear</span>
+                </button>
+                
+                <button id="export-chat-btn" class="action-btn" title="Export Conversation">
+                    <i class="fas fa-download"></i>
+                    <span>Export</span>
+                </button>
+                
+                <button id="memory-toggle-btn" class="action-btn" title="Toggle Memory Sidebar">
+                    <i class="fas fa-bars"></i>
+                    <span>Conversations</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- ============================================ -->
+        <!-- MEMORY SIDEBAR -->
+        <!-- ============================================ -->
+        <aside id="memory-sidebar" class="memory-sidebar">
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    Conversations
+                </h2>
+                <button id="close-sidebar-btn" class="icon-btn" title="Close Sidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Search Conversations -->
+            <div class="sidebar-search">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text" 
+                    id="search-conversations" 
+                    placeholder="Search conversations..."
+                    autocomplete="off"
+                >
+            </div>
+            
+            <!-- Conversation List -->
+            <div id="conversation-list" class="conversation-list">
+                <!-- Conversations will be dynamically added here -->
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <p>No conversations yet</p>
+                    <p class="small">Start chatting to create your first conversation!</p>
+                </div>
+            </div>
+        </aside>
+        
+    </main>
+
+    <!-- ============================================ -->
+    <!-- SETTINGS MODAL -->
+    <!-- ============================================ -->
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </h2>
+                <button class="close-modal-btn" data-modal="settings-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="general">
+                        <i class="fas fa-sliders-h"></i> General
+                    </button>
+                    <button class="tab-btn" data-tab="appearance">
+                        <i class="fas fa-palette"></i> Appearance
+                    </button>
+                    <button class="tab-btn" data-tab="api">
+                        <i class="fas fa-key"></i> API Keys
+                    </button>
+                    <button class="tab-btn" data-tab="learning">
+                        <i class="fas fa-brain"></i> Learning
+                    </button>
+                </div>
+                
+                <div class="settings-content">
+                    
+                    <!-- General Settings -->
+                    <div class="tab-content active" data-tab="general">
+                        <div class="setting-group">
+                            <label for="streaming-toggle">
+                                <i class="fas fa-stream"></i>
+                                Message Streaming
+                            </label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="streaming-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="voice-input-toggle">
+                                <i class="fas fa-microphone"></i>
+                                Voice Input
+                            </label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="voice-input-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="message-reactions-toggle">
+                                <i class="fas fa-heart"></i>
+                                Message Reactions
+                            </label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="message-reactions-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="offline-mode-toggle">
+                                <i class="fas fa-wifi-slash"></i>
+                                Offline Mode (Use Local Knowledge)
+                            </label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="offline-mode-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="adaptive-learning-toggle">
+                                <i class="fas fa-brain"></i>
+                                Adaptive Learning
+                            </label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="adaptive-learning-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Appearance Settings -->
+                    <div class="tab-content" data-tab="appearance">
+                        <div class="setting-group">
+                            <label>
+                                <i class="fas fa-moon"></i>
+                                Theme
+                            </label>
+                            <div class="theme-buttons">
+                                <button class="theme-btn active" data-theme="dark">
+                                    <i class="fas fa-moon"></i> Dark
+                                </button>
+                                <button class="theme-btn" data-theme="light">
+                                    <i class="fas fa-sun"></i> Light
+                                </button>
+                                <button class="theme-btn" data-theme="elegant">
+                                    <i class="fas fa-gem"></i> Elegant
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="font-size">
+                                <i class="fas fa-text-height"></i>
+                                Font Size
+                            </label>
+                            <select id="font-size" class="setting-select">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="message-density">
+                                <i class="fas fa-align-justify"></i>
+                                Message Density
+                            </label>
+                            <select id="message-density" class="setting-select">
+                                <option value="compact">Compact</option>
+                                <option value="comfortable" selected>Comfortable</option>
+                                <option value="spacious">Spacious</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- API Settings -->
+                    <div class="tab-content" data-tab="api">
+                        <div class="info-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p>API keys are stored in <code>config.js</code>. This panel shows which APIs are active.</p>
+                        </div>
+                        
+                        <div id="api-status-list" class="api-status-list">
+                            <!-- API statuses will be populated here -->
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label>
+                                <i class="fas fa-sync"></i>
+                                API Rotation
+                            </label>
+                            <div class="info-text">Round-robin rotation across multiple API keys to maximize usage</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Learning Settings -->
+                    <div class="tab-content" data-tab="learning">
+                        <div class="learning-stats" id="learning-stats">
+                            <!-- Stats will be populated dynamically -->
+                        </div>
+                        
+                        <div class="setting-group">
+                            <button id="export-learning-btn" class="action-btn full-width">
+                                <i class="fas fa-download"></i>
+                                Export Learning Data
+                            </button>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <button id="import-learning-btn" class="action-btn full-width">
+                                <i class="fas fa-upload"></i>
+                                Import Learning Data
+                            </button>
+                            <input type="file" id="import-learning-file" accept=".json" style="display: none;">
+                        </div>
+                        
+                        <div class="setting-group">
+                            <button id="clear-learning-btn" class="action-btn full-width danger">
+                                <i class="fas fa-trash"></i>
+                                Clear All Learning Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- EXPORT MODAL -->
+    <!-- ============================================ -->
+    <div id="export-modal" class="modal" style="display: none;">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-download"></i>
+                    Export Conversation
+                </h2>
+                <button class="close-modal-btn" data-modal="export-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p>Choose export format:</p>
+                <div class="export-buttons">
+                    <button id="export-json-btn" class="action-btn full-width">
+                        <i class="fas fa-code"></i>
+                        JSON
+                    </button>
+                    <button id="export-markdown-btn" class="action-btn full-width">
+                        <i class="fab fa-markdown"></i>
+                        Markdown
+                    </button>
+                    <button id="export-text-btn" class="action-btn full-width">
+                        <i class="fas fa-file-alt"></i>
+                        Plain Text
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CONTINUE BUTTON (for incomplete messages) -->
+    <!-- ============================================ -->
+    <div id="continue-container" class="continue-container" style="display: none;">
+        <button id="continue-btn" class="continue-btn">
+            <i class="fas fa-forward"></i>
+            Continue Response
+        </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TOAST NOTIFICATION -->
+    <!-- ============================================ -->
+    <div id="toast" class="toast" style="display: none;">
+        <i class="toast-icon"></i>
+        <span class="toast-message"></span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- KEYBOARD SHORTCUTS HELP -->
+    <!-- ============================================ -->
+    <div id="shortcuts-help" class="shortcuts-help" style="display: none;">
+        <div class="shortcuts-content">
+            <h3>
+                <i class="fas fa-keyboard"></i>
+                Keyboard Shortcuts
+            </h3>
+            <div class="shortcut-list">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                    <span>Send Message</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>N</kbd>
+                    <span>New Chat</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                    <span>Clear Chat</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>E</kbd>
+                    <span>Export Chat</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>B</kbd>
+                    <span>Toggle Sidebar</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>,</kbd>
+                    <span>Settings</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                    <span>Show Shortcuts</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Close Modal</span>
+                </div>
+            </div>
+            <button class="close-shortcuts-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================ -->
+    
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
+    <!-- Knowledge Bases -->
+    <script src="knowledge.js"></script>
+    <script src="adaptiveknowledge.js"></script>
+    
+    <!-- Main Application -->
+    <script src="lia.js"></script>
+    
+</body>
+</html>
+
